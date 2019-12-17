@@ -47,84 +47,17 @@
 <script>
 import tablePage from './tablePage.vue';
 //为无component列创建一个component
-const fakeComponent = {
-  component: {
-    functional: true,
-    render(h, { props: { row, col }, _v: text }) {
-      const { formater } = col;
-      let v;
-      if (formater) {
-        v = formater(row, col);
-      } else if (row[col.prop] === 0) {
-        v = '0';
-      } else {
-        v = row[col.prop] || '';
-      }
-      return text && text(v) || v;
-    }
+function handleComponent(obj) {
+  let {component, render} = obj;
+  if (render) {
+    return {
+      functional: true,
+      render
+    };
+  } else {
+    return component;
   }
 };
-function getOtherComponent(col) {
-  let temp = {
-    template: '<span class="td-btn-group">',
-    props: ['row', 'col']
-  }
-  if (col.type == 'button') {
-    for (let i = 0; i < col.content.length; i++) {
-      if (col.content[i].type == 'switch') {
-        temp.template += `<el-switch
-                            v-model="row.${col.content[i].prop}"
-                            @change="col.content[${i}].fn(row)"
-                            on-text="启用"
-                            off-text="禁用"
-                            :on-value="1"
-                            :off-value="0">
-                          </el-switch>`;
-      } else if (col.content[i].type == 'relateSaleman') {
-        temp.template += `<span :style="{ width: '${100 / col.content.length}%'}" @click="col.content[${i}].fn(row)">
-                            {{ row.${col.content[i].prop} ? '${col.content[i].label[1]}' : '${col.content[i].label[0]}' }}
-                          </span>`;
-      } else {
-        temp.template += `<span :style="{ width: '${100 / col.content.length}%'}" @click="col.content[${i}].fn(row)">
-                            ${col.content[i].label}
-                          </span>`;
-      }
-    }
-  } else if (col.type == 'days') {
-    temp.template += `<el-input-number v-model="row.${col.prop}" size="small" step="1" :min="0" :max="7"></el-input-number>`
-  } else if (col.type == 'number') {
-    temp.template += `<input class="special-input" v-model="row.${col.prop}" @input="checkNumber">`
-    temp.methods = {
-      checkNumber(val) {
-        this.row[this.col.prop] = this.row[this.col.prop].replace(/\D/g, '');
-      }
-    }
-  } else if (col.type == 'input') {
-    temp.template += `<el-input v-model="row.${col.prop}"></el-input>`
-  } else if (col.type == 'float') {
-    temp.components = {
-      baseInput: require('./baseInput.vue')
-    }
-    temp.template += `<base-input v-model="row.${col.prop}" :type="'float'"></base-input>`
-  } else if (col.type == 'float_byTime') {
-    temp.components = {
-      baseInput: require('./baseInput.vue')
-    }
-    temp.template += `<base-input v-model="row.${col.prop}" :type="'float'" :disabled="(row.fweekStartTime && new Date(row.fweekStartTime).getTime() < Date.now())
-                                                                                    || (row.fmonthStartTime && new Date(row.fmonthStartTime).getTime() < Date.now())"></base-input>`
-  } else if (col.type == 'userType') {
-    temp.template += `<el-select v-model="row.${col.prop}" placeholder="请选择">
-                        <el-option
-                          v-for="item in row.options"
-                          :key="item.fsmallTypeId"
-                          :label="item.fsmallTypeName"
-                          :value="item.fsmallTypeId">
-                        </el-option>
-                      </el-select>`;
-  }
-  temp.template += '</span>';
-  return temp;
-}
 
 export default {
   name: 'base-table',
@@ -166,15 +99,18 @@ export default {
       columns: []
     };
   },
+  watch: {
+    columns: {
+      immediate: true,
+      handler: function () {
+        // 列改变后重新设置列相关配置，重新渲染普通列
+        this.renderNormalColumns();
+      }
+    },
+  },
   mounted() {
     //处理表头数据
-    this.columns = this.tableColumns.map(col => {
-      if (col.type) {
-        col.component = getOtherComponent(col);
-      }
-      const it = Object.assign({}, fakeComponent, col);
-      return it;
-    });
+    this.renderNormalColumns();
   },
   components: {
     tablePage
@@ -185,6 +121,12 @@ export default {
      * @row 当前行
      * @index 当前行的索引
      */
+    renderNormalColumns() {
+      this.columns = this.tableColumns.map(col => {
+        it.component = handleComponent(it);
+        return it;
+      });
+    },
     tableRowClassName(row, index) {
       if (index % 2 == 1) {
         return 'gray-row';

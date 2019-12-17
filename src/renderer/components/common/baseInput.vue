@@ -4,19 +4,13 @@
       {{ title }}
     </div>
     <div class="base-input-value">
-      <number-input v-if="['number', 'float', 'input', 'input_weight'].find(item => item == type)" v-bind="_props" @input="valueChange" title></number-input>
-      <textarea-input v-else-if="type == 'textarea'" v-bind="_props" @input="valueChange" title></textarea-input>
-      <time-range v-else-if="type == 'timerange'" v-bind="_props" @change="valueChange" title></time-range>
-      <date-range v-else v-bind="_props" @change="valueChange" title></date-range>
+      <number-input v-bind="_props" @input="valueChange" title></number-input>
     </div>
   </div>
 </template>
 
 <script>
-  import dateRange from './dateRange.vue';
-  import numberInput from './numberInput/numberInput.vue';
-  import textareaInput from './textInput/textareaInput.vue';
-  import timeRange from './timeRange.vue';
+  import numberInput from './numberInput.vue';
   export default {
     name: 'base-input',
     props: ['title', 'value', 'type', 'disabled', 'maxlength', 'placeholder'],
@@ -29,10 +23,7 @@
       },
     },
     components: {
-      dateRange,
-      timeRange,
       numberInput,
-      textareaInput
     }
   }
 </script>

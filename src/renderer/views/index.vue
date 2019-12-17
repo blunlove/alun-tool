@@ -1,12 +1,17 @@
 <template>
   <div class="index">
-    index
+    <base-input v-model="data"></base-input>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'index'
+  name: 'index',
+  data() {
+    return {
+      data: ''
+    }
+  },
 };
 </script>
 
