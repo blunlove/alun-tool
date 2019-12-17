@@ -1,26 +1,35 @@
 <template>
   <div class="iconfont-sync">
-    iconfont-sync
-    <base-input v-model="data"></base-input>
+    <div class="iconfont-sync-cookie">
+      <el-input v-model="cookie" type="textarea"></el-input>
+    </div>
+    <el-button @click="saveCookie" type="primary">保存cookie</el-button>
   </div>
 </template>
 
 <script>
-import fs from 'fs';
-import path from 'path';
+import { setLocalStorageItem } from '../../utils';
 export default {
   name: 'iconfont-sync',
   data() {
     return {
-      data: ''
+      cookie: '',
     }
   },
-  mounted() {
-    let file = fs.readFileSync(path.join(__dirname, './index.vue'), 'utf-8');
-    console.log(file);
+  methods: {
+    saveCookie() {
+      setLocalStorageItem('iconfont-cookie', this.cookie);
+    }
   },
 };
 </script>
 
 <style lang="less" scoped>
+.iconfont-sync {
+  &-cookie {
+    display: inline-block;
+    vertical-align: top;
+    width: 500px;
+  }
+}
 </style>
