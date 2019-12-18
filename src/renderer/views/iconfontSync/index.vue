@@ -3,11 +3,13 @@
     <div class="iconfont-sync-cookie">
       <el-input v-model="cookie" type="textarea"></el-input>
     </div>
-    <el-button @click="saveCookie" type="primary">保存cookie</el-button>
+    <el-button @click="editConfig" type="primary">修改配置</el-button>
+    <edit-config ref="editConfig"></edit-config>
   </div>
 </template>
 
 <script>
+import editConfig from './editConfig';
 import { setLocalStorageItem } from '../../utils';
 export default {
   name: 'iconfont-sync',
@@ -16,8 +18,12 @@ export default {
       cookie: '',
     }
   },
+  components: {
+    editConfig
+  },
   methods: {
-    saveCookie() {
+    editConfig() {
+      this.$refs.editConfig.openFrame();
       setLocalStorageItem('iconfont-cookie', this.cookie);
     }
   },

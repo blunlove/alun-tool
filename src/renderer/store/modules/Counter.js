@@ -1,25 +1,30 @@
-const state = {
-  main: 0
-}
-
-const mutations = {
-  DECREMENT_MAIN_COUNTER (state) {
-    state.main--
-  },
-  INCREMENT_MAIN_COUNTER (state) {
-    state.main++
-  }
-}
-
-const actions = {
-  someAsyncTask ({ commit }) {
-    // do something async
-    commit('INCREMENT_MAIN_COUNTER')
-  }
-}
+import { setLocalStorageItem, getLocalStorageItem } from '../../utils';
 
 export default {
-  state,
-  mutations,
-  actions
+  state: {
+    iconfont: getLocalStorageItem('iconfont') || {},
+    bilibili: getLocalStorageItem('bilibili') || {}
+  },
+  mutations: {
+    SET_ICONFONT(state, data) {
+      state.iconfont = data;
+      setLocalStorageItem('iconfont', data);
+    },
+    SET_BILIBILI(state) {
+      state.bilibili = data;
+      setLocalStorageItem('bilibili', data);
+    },
+  },
+  actions: {
+    setIconfont({ commit, state }, data) {
+      commit('SET_ICONFONT', data);
+    },
+    setBilibili({ commit, state }) {
+      commit('SET_BILIBILI', data);
+    },
+  },
+  getters: {
+    iconfont: state => state.iconfont,
+    bilibili: state => state.bilibili,
+  }
 }

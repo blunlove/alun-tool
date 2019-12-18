@@ -34,6 +34,7 @@ export default {
   flex-direction: column;
   height: 100%;
   &-header {
+    user-select: none;
     background-color: #3d3d3d;
     &-item {
       display: inline-block;
