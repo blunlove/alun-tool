@@ -1,11 +1,11 @@
 <template>
   <div class="edit-config">
-    <base-dialog ref="baseDialog" @confirm="confirm" @close="close" @closed="closed">
+    <base-dialog ref="baseDialog" title="编辑配置" @confirm="confirm" @close="close" @closed="closed">
       <div class="edit-config-content">
         <div class="edit-config-content-item" v-for="item in config">
-          <label>{{ item.key }}</label>
+          <label>{{ item.label || item.key }}</label>
           <div>
-            <el-input :type="item.type" v-model="data[item.key]"></el-input>
+            <div :is="item.compType" v-bind="item.attrs" v-model="data[item.key]"></div>
           </div>
         </div>
       </div>
@@ -27,12 +27,23 @@ export default {
       data: {},
       config: [
         {
-          type: 'textarea',
+          compType: 'el-input',
+          attrs: {
+            type: 'textarea',
+          },
           key: 'cookie',
         },
         {
-          type: 'input',
+          compType: 'el-input',
+          attrs: {
+            type: 'input',
+          },
           key: 'localPath',
+        },
+        {
+          label: '是否为微信小程序',
+          compType: 'el-switch',
+          key: 'isWechat',
         },
       ]
     }
@@ -58,12 +69,28 @@ export default {
 <style lang="less" scoped>
 .edit-config {
   &-content {
-    width: 400px;
-    label {
-      display: inline-block;
-      width: 80px;
-      text-align: right;
-      font-weight: bold;
+    width: 650px;
+    &-item {
+      display: flex;
+      & + & {
+        margin-top: 10px;
+      }
+      label {
+        display: inline-block;
+        padding-right: 10px;
+        line-height: 40px;
+        width: 120px;
+        text-align: right;
+        font-weight: bold;
+      }
+      & > div {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        /deep/ textarea.el-textarea__inner {
+          height: 100px;
+        }
+      }
     }
   }
 }

@@ -1,9 +1,7 @@
 <template>
   <div class="iconfont-sync">
-    <div class="iconfont-sync-cookie">
-      <el-input v-model="cookie" type="textarea"></el-input>
-    </div>
-    <el-button @click="editConfig" type="primary">修改配置</el-button>
+    <el-button @click="editConfig" type="primary">编辑配置</el-button>
+    <el-button type="primary">一键同步</el-button>
     <edit-config ref="editConfig"></edit-config>
   </div>
 </template>

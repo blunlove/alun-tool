@@ -21,4 +21,7 @@ body {
 #app {
   height: 100%;
 }
+textarea {
+  resize: none !important;
+}
 </style>
