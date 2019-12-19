@@ -1,19 +1,21 @@
 <template>
   <div class="iconfont-sync">
-    <el-button @click="editConfig" type="primary">编辑配置</el-button>
-    <el-button type="primary">一键同步</el-button>
+    <el-button type="primary" @click="editConfig">编辑配置</el-button>
+    <el-button type="primary" @click="syncIcons" :loading="isLoading">一键同步</el-button>
     <edit-config ref="editConfig"></edit-config>
   </div>
 </template>
 
 <script>
 import editConfig from './editConfig';
-import { setLocalStorageItem } from '../../utils';
+import {ipcRenderer} from 'electron';
+import {getLocalStorageItem} from '../../utils';
+
 export default {
   name: 'iconfont-sync',
   data() {
     return {
-      cookie: '',
+      isLoading: false
     }
   },
   components: {
@@ -22,7 +24,14 @@ export default {
   methods: {
     editConfig() {
       this.$refs.editConfig.openFrame();
-      setLocalStorageItem('iconfont-cookie', this.cookie);
+    },
+    syncIcons() {
+      this.isLoading = true;
+      ipcRenderer.send('syncIcon', getLocalStorageItem('iconfont'));
+      ipcRenderer.on('syncIcon-reply', (event, res) => {
+        this.$message.success(res.msg);
+        this.isLoading = false;
+      });
     }
   },
 };

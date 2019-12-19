@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron'
+import './emit';
 
 /**
  * Set `__static` path to static files in production

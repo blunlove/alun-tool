@@ -14,14 +14,9 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import {setLocalStorageItem, getLocalStorageItem} from '../../utils';
 export default {
   name: 'edit-config',
-  computed: {
-    ...mapGetters([
-      'iconfont',
-    ]),
-  },
   data() {
     return {
       data: {},
@@ -35,10 +30,12 @@ export default {
         },
         {
           compType: 'el-input',
-          attrs: {
-            type: 'input',
-          },
           key: 'localPath',
+        },
+        {
+          label: '图标库名',
+          compType: 'el-input',
+          key: 'iconStoreName',
         },
         {
           label: '是否为微信小程序',
@@ -51,10 +48,10 @@ export default {
   methods: {
     openFrame() {
       this.$refs.baseDialog.open();
-      this.data = {...this.iconfont};
+      this.data = getLocalStorageItem('iconfont');
     },
     confirm() {
-      this.$store.dispatch('setIconfont', this.data);
+      setLocalStorageItem('iconfont', this.data);
       this.$message.success('修改成功');
       this.close();
     },
