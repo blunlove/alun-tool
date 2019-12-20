@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
 import Crawler from 'crawler';
-import { testIconZip } from './methods';
-import request from 'request';
+import { testIconZip, mkdir } from './methods';
+import axios from 'axios';
 import path from 'path';
 import fs from 'fs';
 
@@ -18,7 +18,8 @@ ipcMain.on('syncIcon', (event, a, b, c) => {
   // console.log(headers);
   // let distPath = path.join(__dirname, `./dist`);
   // fs.existsSync(distPath) || fs.mkdirSync(distPath);
-  return api({
+  return axios({
+    method: 'get',
     url: `https://www.iconfont.cn/api/user/myprojects.json`,
     headers,
     data: {
@@ -26,12 +27,13 @@ ipcMain.on('syncIcon', (event, a, b, c) => {
       ctoken: cookie.ctoken
     }
   }).then(res => {
-    let ownProjects = res.body.data.ownProjects;
+    let ownProjects = res.data.data.ownProjects;
     let iconStore = ownProjects.find(item => item.name === a.iconStoreName);
     return downloadFile({
       pid: iconStore.id,
       ctoken: cookie.ctoken,
       name: iconStore.name,
+      localPath: a.localPath,
       headers
     })
   }).then(path => {
@@ -44,45 +46,24 @@ ipcMain.on('syncIcon', (event, a, b, c) => {
 })
 
 function downloadFile(parmas) {
-  let filePath = path.join(__dirname, `./${parmas.name}.zip`);
-  let stream = fs.createWriteStream(filePath);
-  console.log(parmas);
-  let url = `https://www.iconfont.cn/api/project/download.zip?pid=${parmas.pid}&ctoken=${parmas.ctoken}`;
-  return new Promise((resolve, reject) => {
-    request(url, {
-      headers: parmas.headers
-    }).pipe(stream).on('close', function (err) {
-      if (err) {
-        // console.log(err);
-        reject('无法获取资源包');
-      } else {
-        resolve(testIconZip(filePath))
-      }
-    });
-  })
-}
-
-function api(options) {
-  return new Promise((resolve, reject) => {
-    let craw = new Crawler(Object.assign(options, {callback: (error, res, done) => {
-      if (error) {
-        reject(error);
-      } else {
-        if (res.headers['content-type'].includes('application/json')) {
-          res.body = JSON.parse(res.body);
-          if (res.body.data) {
-            resolve(res);
-          }
-        }
-        reject('无法获取iconfont数据，请确认cookie是否失效');
-      }
-      done();
-    }}));
-    if (options.data) {
-      Object.keys(options.data).forEach((key, index) => {
-        options.url += `${index === 0 ? '?' : '&'}${key}=${options.data[key]}`;
-      });
-    }
-    craw.queue(options.url);
+  // console.log(parmas.localPath)
+  // let temp = parmas.localPath.split('/').pop().join('/');
+  return mkdir(parmas.localPath).then(() => {
+    let filePath = `${parmas.localPath}/${parmas.name}.zip`;
+    let stream = fs.createWriteStream(filePath);
+    let url = `https://www.iconfont.cn/api/project/download.zip?pid=${parmas.pid}&ctoken=${parmas.ctoken}`;
+    return new Promise((resolve) => {
+      axios({
+        url,
+        method: 'get',
+        responseType: 'stream',
+        headers: parmas.headers
+      }).then(res => {
+        res.data.pipe(stream);
+        stream.on("finish", () => resolve(filePath));
+      })
+    })
+  }).then(testIconZip).catch(err => {
+    console.log(err)
   })
 }
