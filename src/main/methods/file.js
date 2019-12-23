@@ -5,7 +5,7 @@ import {pipeAsyncFunctions} from './seniorfunc.js';
 //新建
 export const mkdir = (path) => {
   if (fs.existsSync(path)) return Promise.resolve();
-  let pathArray = path.split(/\/|\\/g);
+  let pathArray = path.split(/\/|\\+/g);
   return pipeAsyncFunctions(...pathArray.map((item, index, arr) => () => {
     let tempPath = arr.slice(0, index + 1).join('/');
     fs.existsSync(tempPath) || fs.mkdirSync(tempPath);

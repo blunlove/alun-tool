@@ -1,8 +1,6 @@
 import { ipcMain } from 'electron'
-import Crawler from 'crawler';
-import { testIconZip, mkdir } from './methods';
+import { testIconZip, mkdir, rmDir } from './methods';
 import axios from 'axios';
-import path from 'path';
 import fs from 'fs';
 
 ipcMain.on('syncIcon', (event, a, b, c) => {
@@ -14,10 +12,6 @@ ipcMain.on('syncIcon', (event, a, b, c) => {
     cookie: a.cookie,
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36'
   }
-  // console.log(a);
-  // console.log(headers);
-  // let distPath = path.join(__dirname, `./dist`);
-  // fs.existsSync(distPath) || fs.mkdirSync(distPath);
   return axios({
     method: 'get',
     url: `https://www.iconfont.cn/api/user/myprojects.json`,
@@ -46,11 +40,11 @@ ipcMain.on('syncIcon', (event, a, b, c) => {
 })
 
 function downloadFile(parmas) {
-  // console.log(parmas.localPath)
-  // let temp = parmas.localPath.split('/').pop().join('/');
-  return mkdir(parmas.localPath).then(() => {
-    let filePath = `${parmas.localPath}/${parmas.name}.zip`;
-    let stream = fs.createWriteStream(filePath);
+  let temp = parmas.localPath.split(/\/|\\+/g);
+  parmas.fatherPath = temp.slice(0, temp.length - 1).join('/');
+  return mkdir(parmas.fatherPath).then(() => {
+    parmas.filePath = `${parmas.fatherPath}/${parmas.name}.zip`;
+    let stream = fs.createWriteStream(parmas.filePath);
     let url = `https://www.iconfont.cn/api/project/download.zip?pid=${parmas.pid}&ctoken=${parmas.ctoken}`;
     return new Promise((resolve) => {
       axios({
@@ -60,10 +54,10 @@ function downloadFile(parmas) {
         headers: parmas.headers
       }).then(res => {
         res.data.pipe(stream);
-        stream.on("finish", () => resolve(filePath));
+        stream.on("finish", () => resolve(parmas.filePath));
       })
     })
-  }).then(testIconZip).catch(err => {
+  }).then(() => testIconZip(parmas)).catch(err => {
     console.log(err)
   })
 }
