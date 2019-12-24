@@ -6,7 +6,7 @@ export const testIconZip = function(parmas) {
   let zip = new JSzip();
   let file = fs.readFileSync(parmas.filePath);
   let zipFiles = [];
-  pipeAsyncFunctions(
+  return pipeAsyncFunctions(
     () => zip.loadAsync(file).then(_zip => {
       zipFiles = Object.keys(_zip.files);
       if (['iconfont.css', 'demo.css'].every(name => zipFiles.find(ket => ket.includes(name)))) {
@@ -31,4 +31,24 @@ export const testIconZip = function(parmas) {
       })
     ])
   )().finally(() => rmDir(parmas.filePath));
+}
+
+export const changeIconfontCss = function(parmas) {
+  let iconCssPath = `${parmas.localPath}/iconfont.css`;
+  let iconCss = fs.readFileSync(iconCssPath, 'utf-8');
+  let replaceStr = iconCss.match(/url.+data:application.+/);
+  replaceStr = replaceStr ? replaceStr[0] : '';
+  let fontFamily = iconCss.match(/font-family: "(.+)"/);
+  fontFamily = fontFamily ? fontFamily[1] : '';
+  replaceStr = `
+@font-face {
+  font-family: "${fontFamily}";
+  src: ${replaceStr}
+}`
+  iconCss = iconCss.replace(/@font-face((?!})[\S\s])+}/, replaceStr);
+  iconCss = iconCss.replace(/\.([^ ]+)/, str => {
+    str = str.replace('.', '');
+    return `[class*=" ${str}"], [class^=${str}]`;
+  });
+  return fs.writeFileSync(iconCssPath, iconCss);
 }

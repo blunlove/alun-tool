@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { testIconZip, mkdir, rmDir } from './methods';
+import { testIconZip, changeIconfontCss, pipeAsyncFunctions, mkdir, rmDir, rmFile, write } from './methods';
 import axios from 'axios';
 import fs from 'fs';
 
@@ -30,7 +30,7 @@ ipcMain.on('syncIcon', (event, a, b, c) => {
       localPath: a.localPath,
       headers
     })
-  }).then(path => {
+  }).then(() => {
     event.sender.send('syncIcon-reply', {
       code: 200,
       msg: '同步成功',
@@ -40,24 +40,30 @@ ipcMain.on('syncIcon', (event, a, b, c) => {
 })
 
 function downloadFile(parmas) {
+  parmas.localPath = parmas.localPath.replace(/\/|\\+/g, '/');
   let temp = parmas.localPath.split(/\/|\\+/g);
   parmas.fatherPath = temp.slice(0, temp.length - 1).join('/');
-  return mkdir(parmas.fatherPath).then(() => {
-    parmas.filePath = `${parmas.fatherPath}/${parmas.name}.zip`;
-    let stream = fs.createWriteStream(parmas.filePath);
-    let url = `https://www.iconfont.cn/api/project/download.zip?pid=${parmas.pid}&ctoken=${parmas.ctoken}`;
-    return new Promise((resolve) => {
-      axios({
-        url,
-        method: 'get',
-        responseType: 'stream',
-        headers: parmas.headers
-      }).then(res => {
-        res.data.pipe(stream);
-        stream.on("finish", () => resolve(parmas.filePath));
+  return pipeAsyncFunctions(
+    () => mkdir(parmas.fatherPath),
+    () => {
+      parmas.filePath = `${parmas.fatherPath}/${parmas.name}.zip`;
+      let stream = fs.createWriteStream(parmas.filePath);
+      let url = `https://www.iconfont.cn/api/project/download.zip?pid=${parmas.pid}&ctoken=${parmas.ctoken}`;
+      return new Promise((resolve) => {
+        axios({
+          url,
+          method: 'get',
+          responseType: 'stream',
+          headers: parmas.headers,
+        }).then(res => {
+          res.data.pipe(stream);
+          stream.on("finish", () => resolve(parmas.filePath));
+        })
       })
-    })
-  }).then(() => testIconZip(parmas)).catch(err => {
+    },
+    () => testIconZip(parmas),
+    () => changeIconfontCss(parmas)
+  )().catch(err => {
     console.log(err)
-  })
+  });
 }

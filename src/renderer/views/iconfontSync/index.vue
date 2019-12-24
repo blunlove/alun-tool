@@ -21,6 +21,12 @@ export default {
   components: {
     editConfig
   },
+  mounted() {
+    ipcRenderer.on('syncIcon-reply', (event, res) => {
+      this.$message.success(res.msg);
+      this.isLoading = false;
+    });
+  },
   methods: {
     editConfig() {
       this.$refs.editConfig.openFrame();
@@ -28,10 +34,6 @@ export default {
     syncIcons() {
       this.isLoading = true;
       ipcRenderer.send('syncIcon', getLocalStorageItem('iconfont'));
-      ipcRenderer.on('syncIcon-reply', (event, res) => {
-        this.$message.success(res.msg);
-        this.isLoading = false;
-      });
     }
   },
 };
