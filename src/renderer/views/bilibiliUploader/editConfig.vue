@@ -30,17 +30,7 @@ export default {
         },
         {
           compType: 'el-input',
-          key: 'localPath',
-        },
-        {
-          label: '图标库名',
-          compType: 'el-input',
-          key: 'iconStoreName',
-        },
-        {
-          label: '是否为微信小程序',
-          compType: 'el-switch',
-          key: 'isWechat',
+          key: 'uploadPath',
         },
       ]
     }
@@ -48,10 +38,10 @@ export default {
   methods: {
     openFrame() {
       this.$refs.baseDialog.open();
-      this.data = getLocalStorageItem('iconfont') || {};
+      this.data = getLocalStorageItem('bilibili') || {};
     },
     confirm() {
-      setLocalStorageItem('iconfont', this.data);
+      setLocalStorageItem('bilibili', this.data);
       this.$message.success('修改成功');
       this.close();
     },

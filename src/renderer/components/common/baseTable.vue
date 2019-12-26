@@ -123,8 +123,8 @@ export default {
      */
     renderNormalColumns() {
       this.columns = this.tableColumns.map(col => {
-        it.component = handleComponent(it);
-        return it;
+        col.component = handleComponent(col);
+        return col;
       });
     },
     tableRowClassName(row, index) {
