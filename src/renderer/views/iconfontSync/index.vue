@@ -9,7 +9,7 @@
 <script>
 import editConfig from './editConfig';
 import {ipcRenderer} from 'electron';
-import {getLocalStorageItem} from '../../utils';
+import {getLocalStorageItem} from 'alun-utils';
 
 export default {
   name: 'iconfont-sync',

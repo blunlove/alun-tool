@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import {setLocalStorageItem, getLocalStorageItem} from '../../utils';
-import uploadFile from 'node-upload-file';
+import {setLocalStorageItem, getLocalStorageItem} from 'alun-utils';
+// import uploadFile from 'node-upload-file';
 import editConfig from './editConfig';
 export default {
   name: 'bilibili-uploader',

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import {setLocalStorageItem, getLocalStorageItem} from '../../utils';
+import {setLocalStorageItem, getLocalStorageItem} from 'alun-utils';
 export default {
   name: 'edit-config',
   data() {
