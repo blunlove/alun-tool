@@ -11,17 +11,13 @@
 </script>
 
 <style>
-:root {
-  height: 100%;
-}
-body {
-  margin: 0;
-  height: 100%;
-}
 #app {
   height: 100%;
+  min-width: 1200px;
+  min-height: 600px;
+  background-color: #483d8b;
 }
-textarea {
+/* textarea {
   resize: none !important;
-}
+} */
 </style>

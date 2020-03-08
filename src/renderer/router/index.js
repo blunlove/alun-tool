@@ -28,22 +28,24 @@ function loopRoutes(routes, father = null) {
 const routes = [
   {
     path: '/',
-    redirect: '/iconfontSync',
+    redirect: '/bilibili',
     component: 'components/layout',
     children: [
       {
-        path: 'iconfontSync',
-        meta: {
-          title: '图标同步',
-        },
-        component: 'views/iconfontSync'
-      },
-      {
-        path: 'bilibiliUploader',
+        path: 'bilibili',
         meta: {
           title: '图片上传',
+          icon: 'fa fa-keyboard-o',
         },
-        component: 'views/bilibiliUploader'
+        component: 'views/bilibili'
+      },
+      {
+        path: 'iconfont',
+        meta: {
+          title: '图标同步',
+          icon: 'fa fa-bolt',
+        },
+        component: 'views/iconfont'
       },
     ],
   },

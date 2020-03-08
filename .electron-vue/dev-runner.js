@@ -69,7 +69,7 @@ function startRenderer () {
           ctx.middleware.waitUntilValid(() => {
             resolve()
           })
-        }
+        },
       }
     )
 

@@ -1,9 +1,11 @@
 <template>
-  <div class="iconfont-sync">
-    <el-button type="primary" @click="editConfig">编辑配置</el-button>
-    <el-button type="primary" @click="syncIcons" :loading="isLoading">一键同步</el-button>
-    <edit-config ref="editConfig"></edit-config>
-  </div>
+  <al-content-box title="iconfont" background="gold">
+    <div class="iconfont-sync">
+      <el-button type="primary" @click="editConfig">编辑配置</el-button>
+      <el-button type="primary" @click="syncIcons" :loading="isLoading">一键同步</el-button>
+      <edit-config ref="editConfig"></edit-config>
+    </div>
+  </al-content-box>
 </template>
 
 <script>

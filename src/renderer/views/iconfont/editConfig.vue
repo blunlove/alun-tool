@@ -1,6 +1,6 @@
 <template>
   <div class="edit-config">
-    <base-dialog ref="baseDialog" title="编辑配置" @confirm="confirm" @close="close" @closed="closed">
+    <al-dialog ref="baseDialog" title="编辑配置" @confirm="confirm" @close="close" @closed="closed">
       <div class="edit-config-content">
         <div class="edit-config-content-item" v-for="item in config">
           <label>{{ item.label || item.key }}</label>
@@ -9,7 +9,7 @@
           </div>
         </div>
       </div>
-    </base-dialog>
+    </al-dialog>
   </div>
 </template>
 
