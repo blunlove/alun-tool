@@ -1,7 +1,11 @@
 <template>
   <div class="base-menu">  
     <div class="base-menu-content">
-      <div :class="['base-menu-content-item', {active: $route.path === item.path}]" v-for="item in menus" @click="gotoRoute(item)">
+      <div
+        :class="['base-menu-content-item', {active: $route.path === item.url}]"
+        v-for="item in menus"
+        :title="item.meta.title"
+        @click="gotoRoute(item)">
         <i :class="['icon', item.meta.icon]"></i>
       </div>
     </div>
@@ -41,7 +45,6 @@ export default {
   },
   methods: {
     gotoRoute(item) {
-      if (this.$route.path === item.path) return;
       this.$router.push(item.path);
     }
   }

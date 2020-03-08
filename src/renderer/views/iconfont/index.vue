@@ -1,5 +1,5 @@
 <template>
-  <al-content-box title="iconfont" background="gold">
+  <al-content-box :title="$route.meta.title" background="gold">
     <div class="iconfont-sync">
       <el-button type="primary" @click="editConfig">编辑配置</el-button>
       <el-button type="primary" @click="syncIcons" :loading="isLoading">一键同步</el-button>

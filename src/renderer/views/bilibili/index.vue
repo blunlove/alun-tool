@@ -1,5 +1,5 @@
 <template>
-  <al-content-box title="bilibili图床" background="tomato">
+  <al-content-box :title="$route.meta.title" background="tomato">
     <div class="index">
       <div class="index-file">
         <el-upload

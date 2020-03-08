@@ -34,7 +34,7 @@ const routes = [
       {
         path: 'bilibili',
         meta: {
-          title: '图片上传',
+          title: 'bilibili图床',
           icon: 'fa fa-keyboard-o',
         },
         component: 'views/bilibili'
@@ -42,10 +42,26 @@ const routes = [
       {
         path: 'iconfont',
         meta: {
-          title: '图标同步',
+          title: 'iconfont图标同步',
           icon: 'fa fa-bolt',
         },
         component: 'views/iconfont'
+      },
+      {
+        path: 'baidu',
+        meta: {
+          title: '图片文字识别',
+          icon: 'fa fa-rocket',
+        },
+        component: 'views/baidu'
+      },
+      {
+        path: 'craft',
+        meta: {
+          title: 'mc工具',
+          icon: 'fa fa-dribbble',
+        },
+        component: 'views/craft'
       },
     ],
   },
