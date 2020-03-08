@@ -66,12 +66,13 @@ export default {
       &:hover {
         cursor: pointer;
         .icon {
-          opacity: 0.6;
+          opacity: 0.5;
           transform: scale(1.4);
         }
       }
       &.active {
         .icon {
+          color: rgb(43, 43, 43);
           transform: scale(1.8);
         }
       }
