@@ -24,14 +24,18 @@ export default {
     editConfig
   },
   mounted() {
-    ipcRenderer.on('syncIcon-reply', (event, res) => {
-      this.$message.success(res.msg);
-      this.isLoading = false;
-    });
+    ipcRenderer.on('syncIcon-reply', this.listenerEvent);
+  },
+  destroyed() {
+    ipcRenderer.removeListener('syncIcon-reply', this.listenerEvent)
   },
   methods: {
     editConfig() {
       this.$refs.editConfig.openFrame();
+    },
+    listenerEvent(event, res) {
+      this.$message.success(res.msg);
+      this.isLoading = false;
     },
     syncIcons() {
       this.isLoading = true;
